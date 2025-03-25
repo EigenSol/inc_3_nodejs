@@ -24,7 +24,7 @@ async function login(req, res) {
 
 async function logout(req, res) {
     try {
-        const { token } = req.body;
+        const token = req.headers['authorization'];
         await auth.delete_token(token);
         res.status(200).send({success: true, message: "Logged out successfully"})
     }
@@ -35,8 +35,8 @@ async function logout(req, res) {
 
 async function check(req, res) {
     try {
-        const { token } = req.body;
-        expiry = await auth.get_expiry(token);
+        const token = req.headers['authorization'];
+        const expiry = await auth.get_expiry(token);
         if (!expiry) {
             return res.status(404).send({ success: false, message: "Token not found" });
         }
