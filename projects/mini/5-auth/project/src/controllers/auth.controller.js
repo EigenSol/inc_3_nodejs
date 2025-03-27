@@ -35,18 +35,8 @@ async function logout(req, res) {
 
 async function check(req, res) {
     try {
-        const token = req.headers['authorization'];
-        const expiry = await auth.get_expiry(token);
-        if (!expiry) {
-            return res.status(404).send({ success: false, message: "Token not found" });
-        }
-
-        const now = new Date();
-        if (now > new Date(expiry.valid_till)) {
-            return res.status(401).send({ success: false, message: "Token expired" });
-        }
-
-        res.status(200).send({ success: true, message: "Token valid" });
+        expiry = await auth.get_expiry(req.headers['authorization']);
+        res.status(200).send({ success: true, message: "Token valid", valid_till: expiry['valid_till'] });
     }
     catch (error) {
         res.status(500).send({success: false, message: error})
